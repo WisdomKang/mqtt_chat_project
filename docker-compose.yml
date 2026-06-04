@@ -7,3 +7,16 @@ services:
       - "1883:1883"
     volumes:
       - ./compose_config/mosquitto:/mosquitto/config
+
+    
+  postgres :
+    image : postgres:15
+    container_name : postgres-db
+    restart : always
+    environment : 
+      POSTGRES_USER : postgres
+      POSTGRES_PASSWORD : 1234
+    ports :
+      - "5432:5432"
+    volumes :
+      - ./init-db:/docker-entrypoint-initdb.d
