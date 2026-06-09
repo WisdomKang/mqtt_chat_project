@@ -2,15 +2,25 @@ package main
 
 import (
 	"mqtt_chat_manager/internal/database"
-	"mqtt_chat_manager/internal/models"
+	"mqtt_chat_manager/internal/handler"
 	"mqtt_chat_manager/internal/repository"
+	"mqtt_chat_manager/internal/router"
 )
 
 func main() {
 	db := database.InitDB()
+	messageRepo := repository.MessageRepository{DB: db}
+	userRepo := repository.UserRepository{DB: db}
+	roomRepo := repository.RoomRepository{DB: db}
 
-	repo := repository.UserRepository{DB: db}
+	chatHandler := handler.HttpHandler{
+		UserRepo:    userRepo,
+		MessageRepo: messageRepo,
+		RoomRepo:    roomRepo,
+	}
 
-	repo.CreateUser(models.User{Username: "강현명!"})
-	// repo.DeleteUser(2)
+	router := router.SetupRouter(&chatHandler)
+
+	router.Run(":8080")
+
 }

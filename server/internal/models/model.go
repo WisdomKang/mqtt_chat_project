@@ -28,8 +28,8 @@ type Room_Member struct {
 }
 
 type Message struct {
-	MessageId int `gorm:"primaryKey;column:message_id"`
-	RoomId    int
-	SenderID  int
-	content   string
+	MessageId int    `gorm:"primaryKey;column:message_id"`
+	RoomId    int    `gorm:"column:room_id"`
+	SenderID  int    `gorm:"column:sender_id"`
+	content   string `gorm:"column:content"`
 }
