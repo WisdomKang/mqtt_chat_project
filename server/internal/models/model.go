@@ -5,15 +5,17 @@ import (
 )
 
 type User struct {
-	UserId   int `gorm:"primaryKey;column:user_id"`
-	Username string
+	UserId   int    `gorm:"primaryKey;column:user_id" ,json:"user_id"`
+	Username string `json:"username"`
 
 	created_at time.Time
 	deleted_at *time.Time
 }
 type Room struct {
-	RoomId   int `gorm:"primaryKey;column:room_id"`
-	RoomName string
+	RoomId   int    `gorm:"primaryKey;column:room_id" json:"room_id"`
+	RoomName string `json:"room_name"`
+
+	RommMembers []User `gorm:"many2many:room_members;foreignKey:RoomId;joinForeignKey:room_id;References:UserId;joinReferences:user_id"`
 
 	created_at time.Time
 	deleted_at *time.Time

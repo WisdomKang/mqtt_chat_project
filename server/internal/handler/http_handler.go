@@ -16,6 +16,30 @@ type HttpHandler struct {
 	RoomRepo    repository.RoomRepository
 }
 
+type AuthenticateRequest struct {
+	UserName string `json:"username" binding:"required"`
+}
+
+func (h HttpHandler) AuthenticateUser(ctx *gin.Context) {
+	var requestBody AuthenticateRequest
+	err := ctx.ShouldBindJSON(&requestBody)
+
+	if err != nil {
+		ctx.JSON(400, gin.H{"error": "잘못된 요청"})
+		return
+	}
+
+	user, err := h.UserRepo.FindByUserName(requestBody.UserName)
+
+	if err != nil {
+		ctx.JSON(401, gin.H{"error": err})
+		return
+	}
+
+	ctx.JSON(200, gin.H{"user": user})
+
+}
+
 func (h HttpHandler) GetMessages(ctx *gin.Context) {
 	roomId := ctx.Param("room_id")
 
@@ -37,10 +61,16 @@ func (h HttpHandler) GetMessages(ctx *gin.Context) {
 
 // 사용자 생성 핸들러
 func (h HttpHandler) CreateUserId(ctx *gin.Context) {
-	userName := ctx.Param("user_name")
+	var request AuthenticateRequest
+	err := ctx.ShouldBindJSON(&request)
+
+	if err != nil {
+		ctx.JSON(400, gin.H{"error": err})
+		return
+	}
 
 	// 사용자 이름으로 조회
-	_, err := h.UserRepo.FindByUserName(userName)
+	_, err = h.UserRepo.FindByUserName(request.UserName)
 
 	// 사용자명 이미 있을시 중복 생성 방지
 	if err != nil {
@@ -52,10 +82,12 @@ func (h HttpHandler) CreateUserId(ctx *gin.Context) {
 
 	// 사용자명 없을시에 생성
 	var newUser models.User
+	newUser.Username = request.UserName
 	err = h.UserRepo.CreateUser(newUser)
 
 	if err != nil {
-		ctx.JSON(500, gin.H{"error": "사용자 생성 실패"})
+		ctx.JSON(500, gin.H{"error": err})
+		return
 	}
 	ctx.JSON(200, gin.H{"user": newUser})
 
