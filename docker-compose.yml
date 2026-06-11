@@ -1,11 +1,18 @@
+
+networks:
+  mqtt_chat_network:
+
 services:
   mqtt:
     image: eclipse-mosquitto:2.0.15
     container_name: mqtt-broker
+    restart: always
     ports:
       - "1883:1883"
     volumes:
       - ./compose_config/mosquitto:/mosquitto/config
+    networks:
+      - mqtt_chat_network
 
     
   postgres :
@@ -16,6 +23,33 @@ services:
       POSTGRES_USER : postgres
       POSTGRES_PASSWORD : 1234
     ports :
-      - "5432:5432"
+      - "8094:5432"
     volumes :
       - ./init-db:/docker-entrypoint-initdb.d
+    networks:
+      - mqtt_chat_network
+
+  
+  http-handler-server :
+    build : ./server
+    container_name : http-handler-server
+    restart : always
+    ports :
+      - "8080:8080"
+    depends_on :
+      - postgres
+    networks:
+      - mqtt_chat_network
+
+  mqtt-webhook-bridge :
+    build : ./mqtt_web_hook
+    environment:
+      - MQTT_BROKER_URL=tcp://mosquitto:1883        # 컴포즈 내부 주소
+      - WEBHOOK_TARGET_URL=http://http-handler-server:8080/api/v1/webhook # 컴포즈 내부 주소
+    container_name : mqtt-webhook-bridge
+    restart : always
+    depends_on :
+      - mqtt
+      - http-handler-server
+    networks:
+      - mqtt_chat_network
