@@ -5,7 +5,7 @@ import (
 )
 
 type User struct {
-	UserId   int    `gorm:"primaryKey;column:user_id" ,json:"user_id"`
+	UserId   int    `gorm:"primaryKey;column:user_id" json:"user_id"`
 	Username string `json:"username"`
 
 	created_at time.Time
@@ -22,16 +22,19 @@ type Room struct {
 }
 
 type Room_Member struct {
-	Room Room `gorm:"foreignKey:room_id"`
-	User User `gorm:"foreignKey:user_id"`
+	MemberId int  `gorm:"primaryKey;column:member_id"`
+	Room     Room `gorm:"foreignKey:room_id"`
+	User     User `gorm:"foreignKey:user_id"`
 
 	created_at time.Time
 	deleted_at *time.Time
 }
 
 type Message struct {
-	MessageId int    `gorm:"primaryKey;column:message_id"`
-	RoomId    int    `gorm:"column:room_id"`
-	SenderID  int    `gorm:"column:sender_id"`
-	content   string `gorm:"column:content"`
+	MessageId int    `gorm:"primaryKey;column:message_id" json:"message_id"`
+	RoomId    int    `gorm:"column:room_id" json:"room_id"`
+	SenderId  int    `gorm:"column:sender_id" json:"sender_id"`
+	Content   string `gorm:"column:content" json:"content"`
+
+	created_at time.Time
 }

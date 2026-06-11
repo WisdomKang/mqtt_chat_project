@@ -8,7 +8,7 @@ import (
 )
 
 func InitDB() *gorm.DB {
-	dsn := "host=localhost user=chat_app_user password=test1234 dbname=chat_db port=5432 sslmode=disable TimeZone=Asia/Seoul"
+	dsn := "host=localhost user=chat_app_user password=test1234 dbname=chat_db port=8094 sslmode=disable TimeZone=Asia/Seoul"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
