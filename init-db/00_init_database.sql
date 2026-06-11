@@ -28,8 +28,9 @@ CREATE TABLE IF NOT EXISTS rooms (
 );
 
 CREATE TABLE IF NOT EXISTS room_members (
+    member_id SERIAL PRIMARY KEY,
     room_id INTEGER REFERENCES rooms(room_id),
-    member_id INTEGER REFERENCES users(user_id),
+    user_id INTEGER REFERENCES users(user_id),
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP
