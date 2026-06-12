@@ -14,30 +14,30 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO ch
 
 -- 테이블 생성 (이미 존재하는지 확인 후 생성)
 CREATE TABLE IF NOT EXISTS users (
-    user_id SERIAL PRIMARY KEY,
+    user_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS rooms (
-    room_id SERIAL PRIMARY KEY,
+    room_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     room_name VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS room_members (
-    member_id SERIAL PRIMARY KEY,
-    room_id INTEGER REFERENCES rooms(room_id),
-    user_id INTEGER REFERENCES users(user_id),
+-- CREATE TABLE IF NOT EXISTS room_members (
+--     member_id IDENTITY PRIMARY KEY,
+--     room_id INTEGER REFERENCES rooms(room_id),
+--     user_id INTEGER REFERENCES users(user_id),
 
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP
-);
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     deleted_at TIMESTAMP
+-- );
 
 CREATE TABLE IF NOT EXISTS messages (
-    message_id SERIAL PRIMARY KEY,
+    message_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     room_id INTEGER REFERENCES rooms(room_id),
     sender_id INTEGER REFERENCES users(user_id),
     content TEXT NOT NULL,
