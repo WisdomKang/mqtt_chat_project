@@ -14,10 +14,9 @@ func (r MessageRepository) CreateMessage(message models.Message) error {
 	return r.DB.Create(&message).Error
 }
 
-func (r MessageRepository) FindByRoomId(roomId int, page int, pageSize int) ([]models.Message, error) {
+func (r MessageRepository) FindByRoomId(roomId int, start_id int, pageSize int) ([]models.Message, error) {
 	var messages []models.Message
-	err := r.DB.Where("room_id=?", roomId).Offset((page - 1) * pageSize).Limit(pageSize).Find(&messages).Error
-
+	err := r.DB.Where("room_id=? AND message_id < ?", roomId, start_id).Order("message_id desc").Limit(pageSize).Find(&messages).Error
 	return messages, err
 }
 

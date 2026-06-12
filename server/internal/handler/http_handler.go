@@ -2,6 +2,8 @@ package handler
 
 import (
 	"errors"
+	"log"
+	"math"
 	"mqtt_chat_manager/internal/models"
 	"mqtt_chat_manager/internal/repository"
 	"strconv"
@@ -22,7 +24,7 @@ type AuthenticateRequest struct {
 
 // 사용자 인증
 func (h HttpHandler) SignIn(ctx *gin.Context) {
-	var requestBody AuthenticateRequest
+	var requestBody models.AuthenticateRequest
 	err := ctx.ShouldBindJSON(&requestBody)
 
 	if err != nil {
@@ -30,7 +32,7 @@ func (h HttpHandler) SignIn(ctx *gin.Context) {
 		return
 	}
 
-	user, err := h.UserRepo.FindByUserName(requestBody.UserName)
+	user, err := h.UserRepo.FindByUserName(requestBody.Username)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -45,10 +47,10 @@ func (h HttpHandler) SignIn(ctx *gin.Context) {
 
 }
 
-// 사용자 생성 핸들러
+// 사용자 생성
 func (h HttpHandler) SignUp(ctx *gin.Context) {
-	var request AuthenticateRequest
-	err := ctx.ShouldBindJSON(&request)
+	var requestBody AuthenticateRequest
+	err := ctx.ShouldBindJSON(&requestBody)
 
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": "잘못된 요청"})
@@ -57,7 +59,7 @@ func (h HttpHandler) SignUp(ctx *gin.Context) {
 
 	// 사용자명 없을시에 생성
 	var newUser models.User
-	newUser.Username = request.UserName
+	newUser.Username = requestBody.UserName
 	err = h.UserRepo.CreateUser(newUser)
 
 	if err != nil {
@@ -75,27 +77,39 @@ func (h HttpHandler) SignUp(ctx *gin.Context) {
 }
 
 // 메시지 조회
+/*
+ - room_id: 조회할 대화방 ID
+ - start_id: 조회 시작 메시지 ID (이 ID보다 작은 메시지들을 조회)
+ - page_size: 한 번에 조회할 메시지 수 (예: 20)
+*/
 func (h HttpHandler) GetMessages(ctx *gin.Context) {
 	roomId := ctx.Param("room_id")
-	pageIndex := ctx.Param("page_index")
+	startId := ctx.Query("start_id")
 
-	roomIdint, err := strconv.Atoi(roomId)
-	pageIndexint, err := strconv.Atoi(pageIndex)
+	roomIdInt, err := strconv.Atoi(roomId)
+	startIdInt, err := strconv.Atoi(startId)
+
+	log.Println("roomIdInt: ", roomIdInt, "startIdInt: ", startIdInt)
 
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": "파라미터 오류"})
 		return
 	}
 
-	messages, err := h.MessageRepo.FindByRoomId(int(roomIdint), pageIndexint, 20)
+	if startIdInt < 0 {
+		startIdInt = math.MaxInt64
+	}
+
+	messages, err := h.MessageRepo.FindByRoomId(roomIdInt, startIdInt, 30)
 
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": "메시지 로드 실패"})
 		return
 	}
-	ctx.JSON(200, messages)
+	ctx.JSON(200, gin.H{"messages": messages})
 }
 
+// 메시지 기록
 func (h HttpHandler) RecordMessage(ctx *gin.Context) {
 	var message models.RecordMessageRequest
 	err := ctx.ShouldBindJSON(&message)
@@ -121,8 +135,15 @@ func (h HttpHandler) RecordMessage(ctx *gin.Context) {
 
 // 대화방 생성
 func (h HttpHandler) CreateRoom(ctx *gin.Context) {
-	roomName := ctx.Param("room_name")
-	room, err := h.RoomRepo.CreateRoom(roomName)
+	var request models.CreateRoomRequest
+	err := ctx.ShouldBindJSON(&request)
+
+	if err != nil {
+		ctx.JSON(400, gin.H{"error": "잘못된 요청", "details": err.Error()})
+		return
+	}
+
+	room, err := h.RoomRepo.CreateRoom(request.RoomName)
 
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": "방 생성 실패"})

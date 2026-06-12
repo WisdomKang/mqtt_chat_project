@@ -19,6 +19,8 @@ func InitDB() *gorm.DB {
 	if err != nil {
 		log.Fatalf("Failed to get generic database object: %v", err)
 	}
+
+	// DB 연결이 실제로 가능한지 확인 (Ping)
 	if err := sqlDB.Ping(); err != nil {
 		log.Fatalf("Database unreachable: %v", err)
 	}

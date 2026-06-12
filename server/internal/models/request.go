@@ -12,6 +12,11 @@ type GetRoomsRequest struct {
 	UserId int `json:"user_id" binding:"required"`
 }
 
+type JoinRoomRequest struct {
+	UserId int `json:"user_id" binding:"required"`
+	RoomId int `json:"room_id" binding:"required"`
+}
+
 type GetMessagesRequest struct {
 	RoomId int `json:"room_id" binding:"required"`
 }
