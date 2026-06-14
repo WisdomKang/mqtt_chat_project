@@ -18,18 +18,29 @@ func _on_enter_button_pressed() -> void:
 		
 	print("입장 시도 유저 이름: ", user_name)
 	
+	GlobalUI.show_loading()
 	var headers = ["Content-Type: application/json"]
-	var url= "http://127.0.0.1:8080/api/v1/rooms"
-	var error = http_request.request(url,headers, HTTPClient.METHOD_GET, "")
+	var url= "http://127.0.0.1:8080/auth/signin"
+	
+	var request_body = {
+		"username" : user_name
+	}
+	
+	var error = http_request.request(url,headers, HTTPClient.METHOD_POST, JSON.stringify(request_body))
 	
 	if error != OK:
 		print("HTTP 요청 실패")
+		return
+	
 	
 	
 func _on_request_completed(result:int , response_code:int, headers : PackedStringArray, body: PackedByteArray) -> void :
 	if response_code == 200:
 		var json = JSON.parse_string(body.get_string_from_utf8())
 		print("서버 응답 성공! 방 정보: ", json)
-		# TODO: 여기서 다음 화면(채팅방)으로 넘어가거나 MQTT 연결 시작!
+		NetworkManager.set_user(json["user"])
+		GlobalUI.hide_loading()
+		get_tree().change_scene_to_file("res://ChatList.tscn")
+		
 	else:
 		print("서버 에러 발생! 상태 코드: ", response_code)
