@@ -2,12 +2,10 @@ extends Control
 
 @onready var name_input: LineEdit = $MarginContainer/VBoxContainer/NameInput
 @onready var enter_button: Button = $MarginContainer/VBoxContainer/SignInButton
-@onready var http_request : HTTPRequest = $HTTPRequest
 
 func _ready() -> void:
 	# 버튼 클릭 이벤트 연결
 	enter_button.pressed.connect(_on_enter_button_pressed)
-	http_request.request_completed.connect(_on_request_completed)
 
 func _on_enter_button_pressed() -> void:
 	var user_name: String = name_input.text.strip_edges()
@@ -18,29 +16,8 @@ func _on_enter_button_pressed() -> void:
 		
 	print("입장 시도 유저 이름: ", user_name)
 	
-	GlobalUI.show_loading()
-	var headers = ["Content-Type: application/json"]
-	var url= "http://127.0.0.1:8080/auth/signin"
-	
-	var request_body = {
-		"username" : user_name
-	}
-	
-	var error = http_request.request(url,headers, HTTPClient.METHOD_POST, JSON.stringify(request_body))
-	
-	if error != OK:
-		print("HTTP 요청 실패")
-		return
+	NetworkManager.signin(user_name)
 	
 	
 	
-func _on_request_completed(result:int , response_code:int, headers : PackedStringArray, body: PackedByteArray) -> void :
-	if response_code == 200:
-		var json = JSON.parse_string(body.get_string_from_utf8())
-		print("서버 응답 성공! 방 정보: ", json)
-		NetworkManager.set_user(json["user"])
-		GlobalUI.hide_loading()
-		get_tree().change_scene_to_file("res://ChatList.tscn")
-		
-	else:
-		print("서버 에러 발생! 상태 코드: ", response_code)
+	

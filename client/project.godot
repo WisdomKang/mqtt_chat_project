@@ -22,7 +22,7 @@ NetworkManager="*uid://c6fv20ejir6wy"
 
 [display]
 
-window/size/viewport_width=1270
+window/size/viewport_width=480
 window/size/viewport_height=680
 
 [physics]

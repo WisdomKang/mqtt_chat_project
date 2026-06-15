@@ -1,5 +1,6 @@
 extends Node
 
+class_name MQTTClient
 # MQTT client implementation in GDScript
 # Loosely based on https://github.com/pycom/pycom-libraries/blob/master/lib/mqtt/mqtt.py
 # and initial work by Alex J Lennon <ajlennon@dynamicdevices.co.uk>

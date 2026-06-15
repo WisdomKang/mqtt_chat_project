@@ -43,7 +43,3 @@ alignment = 1
 [node name="SignInButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1121770422]
 layout_mode = 2
 text = "Sign in"
-
-[node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=1693589200]
-max_redirects = 1
-timeout = 1.0

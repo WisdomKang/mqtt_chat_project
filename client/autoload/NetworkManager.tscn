@@ -1,6 +1,13 @@
 [gd_scene format=3 uid="uid://c6fv20ejir6wy"]
 
 [ext_resource type="Script" uid="uid://cdo4pos5cq18q" path="res://autoload/network_manager.gd" id="1_h6x3r"]
+[ext_resource type="PackedScene" uid="uid://ktm7k0co2o7l" path="res://addons/mqtt/mqtt.tscn" id="2_y6vsb"]
 
 [node name="NetworkManager" type="Node" unique_id=1632588322]
 script = ExtResource("1_h6x3r")
+
+[node name="MQTT" parent="." unique_id=2093678586 instance=ExtResource("2_y6vsb")]
+
+[node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=1603575019]
+max_redirects = 2
+timeout = 2.0
