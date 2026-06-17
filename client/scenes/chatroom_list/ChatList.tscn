@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://dww15w68dad8b"]
+
+[ext_resource type="Script" uid="uid://dw3uvvr73t0b" path="res://scenes/chatroom_list/chat_list.gd" id="1_m7ibe"]
+
+[node name="ChatList" type="Control" unique_id=1556355405]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_m7ibe")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1774088518]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=2023309334]
+layout_mode = 2
+
+[node name="Chat Room List" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1577911553]
+layout_mode = 2
+text = "Chat Room List"
+
+[node name="Gap" type="Control" parent="MarginContainer/VBoxContainer" unique_id=1842905586]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer" unique_id=1618047897]
+custom_minimum_size = Vector2(0, 500)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="ListVboxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer" unique_id=258417472]
+layout_mode = 2
+
+[node name="Gap2" type="Control" parent="MarginContainer/VBoxContainer" unique_id=647345766]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1735860111]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/VBoxContainer" unique_id=1403756155]
+layout_mode = 2
+placeholder_text = "대화제목"
+
+[node name="RoomCreateButton" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer" unique_id=338661661]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Create ChatRoom
+"

@@ -1,9 +1,17 @@
 [gd_scene format=3 uid="uid://16g60qadci6u"]
 
 [ext_resource type="Script" uid="uid://bpiewc5npfium" path="res://autoload/global_ui.gd" id="1_l2rx7"]
+[ext_resource type="Texture2D" uid="uid://gnodehsyn3n8" path="res://assets/icon.svg" id="2_l2rx7"]
+[ext_resource type="Script" uid="uid://crdmwdch7f52t" path="res://autoload/loading_ui_container.gd" id="2_w1t1o"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_l2rx7"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+texture = ExtResource("2_l2rx7")
 
 [node name="GlobalUI" type="CanvasLayer" unique_id=978456724]
-visible = false
 script = ExtResource("1_l2rx7")
 
 [node name="Background" type="ColorRect" parent="." unique_id=718521791]
@@ -21,13 +29,32 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="CenterContainer" unique_id=1497482359]
+[node name="LoadingUIContainer" type="PanelContainer" parent="CenterContainer" unique_id=1497482359]
+visible = false
 layout_mode = 2
+script = ExtResource("2_w1t1o")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer" unique_id=1685461928]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/LoadingUIContainer" unique_id=1685461928]
 layout_mode = 2
 alignment = 1
 
-[node name="LoadingText" type="Label" parent="CenterContainer/PanelContainer/VBoxContainer" unique_id=1966502074]
+[node name="LoadingText" type="Label" parent="CenterContainer/LoadingUIContainer/VBoxContainer" unique_id=1966502074]
 layout_mode = 2
 text = "처리중"
+
+[node name="LoadingTimer" type="Timer" parent="CenterContainer/LoadingUIContainer" unique_id=1765855504]
+wait_time = 0.5
+autostart = true
+
+[node name="ModalUIContainer" type="PanelContainer" parent="CenterContainer" unique_id=1074651439]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_l2rx7")
+
+[node name="ModalContent" type="Label" parent="CenterContainer/ModalUIContainer" unique_id=1977700970]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 11
+theme_override_font_sizes/font_size = 20
+text = "모달창 테스트 입니다."

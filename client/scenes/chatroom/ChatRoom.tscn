@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://c5ne2fxol65ki"]
+
+[ext_resource type="Script" uid="uid://dtlyspe6gtryy" path="res://scenes/chatroom/chat_room.gd" id="1_i1ngv"]
+
+[node name="ChatRoom" type="MarginContainer" unique_id=1783670799]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+script = ExtResource("1_i1ngv")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1805986289]
+layout_mode = 2
+
+[node name="TopLayout" type="HBoxContainer" parent="VBoxContainer" unique_id=933664012]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer/TopLayout" unique_id=1107401402]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "제목~"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ExitButton" type="Button" parent="VBoxContainer/TopLayout" unique_id=1423056116]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "나가기"
+
+[node name="MessageLayout" type="RichTextLabel" parent="VBoxContainer" unique_id=76659617]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+
+[node name="BottomLayout" type="HBoxContainer" parent="VBoxContainer" unique_id=1489454124]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/BottomLayout" unique_id=1771773180]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "메세지 입력"
+
+[connection signal="text_submitted" from="VBoxContainer/BottomLayout/LineEdit" to="." method="_on_line_edit_text_submitted"]

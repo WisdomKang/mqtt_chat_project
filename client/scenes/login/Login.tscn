@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bwa0ja4riwc7"]
 
-[ext_resource type="Script" uid="uid://cv68x3eij788d" path="res://login.gd" id="1_6uxbt"]
+[ext_resource type="Script" uid="uid://cv68x3eij788d" path="res://scenes/login/login.gd" id="1_6uxbt"]
 
 [node name="LoginPage" type="Control" unique_id=1531479163]
 layout_mode = 3
