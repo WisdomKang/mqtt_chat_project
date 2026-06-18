@@ -84,13 +84,9 @@ func create_chatroom(chatroom_name : String) -> Array :
 	request_completed.emit()
 	
 	return response_body
-	
-func _on_get_chatroom_list_completed(response : Array) -> void  :
-	pass
-	
-	
-func _on_create_chatroom(response : Array) -> void :
-	pass
+
+func get_message_log(room_id : int, page : int) -> Array :
+	var request_url = http_server_url + "/api/rooms/" + room_id +"/message" 
 
 func set_user( new_user : Dictionary) -> void :
 	current_user = {
