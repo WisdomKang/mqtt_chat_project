@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS rooms (
 -- );
 
 CREATE TABLE IF NOT EXISTS messages (
-    message_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    message_id BIGINT PRIMARY KEY,
     room_id INTEGER REFERENCES rooms(room_id),
     sender_id INTEGER REFERENCES users(user_id),
     content TEXT NOT NULL,
