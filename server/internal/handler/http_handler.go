@@ -60,7 +60,7 @@ func (h HttpHandler) SignUp(ctx *gin.Context) {
 	// 사용자명 없을시에 생성
 	var newUser models.User
 	newUser.Username = requestBody.UserName
-	err = h.UserRepo.CreateUser(newUser)
+	err = h.UserRepo.CreateUser(&newUser)
 
 	if err != nil {
 		if !errors.Is(err, gorm.ErrDuplicatedKey) {
@@ -120,12 +120,13 @@ func (h HttpHandler) RecordMessage(ctx *gin.Context) {
 	}
 
 	newMessage := models.Message{
-		RoomId:   message.RoomId,
-		SenderId: message.SenderId,
-		Content:  message.Content,
+		MessageId: message.MessageId,
+		RoomId:    message.RoomId,
+		SenderId:  message.SenderId,
+		Content:   message.Content,
 	}
 
-	err = h.MessageRepo.CreateMessage(newMessage)
+	err = h.MessageRepo.CreateMessage(&newMessage)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": "메시지 저장 실패", "details": err.Error()})
 		return

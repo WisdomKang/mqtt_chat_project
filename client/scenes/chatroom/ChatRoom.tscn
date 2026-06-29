@@ -47,4 +47,5 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "메세지 입력"
 
+[connection signal="pressed" from="VBoxContainer/TopLayout/ExitButton" to="." method="_on_exit_button_pressed"]
 [connection signal="text_submitted" from="VBoxContainer/BottomLayout/LineEdit" to="." method="_on_line_edit_text_submitted"]

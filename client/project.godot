@@ -19,6 +19,7 @@ config/icon="res://assets/icon.svg"
 
 GlobalUI="*uid://16g60qadci6u"
 NetworkManager="*uid://c6fv20ejir6wy"
+SceneManager="*uid://motesk6xupge"
 
 [display]
 

@@ -1,14 +1,18 @@
 extends MarginContainer
 
+const CHATROOM_SCENE = preload("res://scenes/chatroom_list/ChatList.tscn")
+
 @onready var title_text = $VBoxContainer/TopLayout/Title
-@onready var message_list = $VBoxContainer/MessageLayout
+@onready var message_log = $VBoxContainer/MessageLayout
 @onready var line_edit = $VBoxContainer/BottomLayout/LineEdit
+@onready var back_button = $VBoxContainer/TopLayout/ExitButton
 
 var room_name : String
 var room_id : int
 
 func _ready() -> void:
 	title_text.text = room_name
+	_load_message_logs(-1)
 
 func init_chatroom( new_room_name : String , new_room_id : int) -> void :
 	room_name = new_room_name
@@ -20,17 +24,34 @@ func _on_line_edit_text_submitted(new_text: String) -> void:
 		return
 		
 	line_edit.text = ""
-	message_list.append_text( _decorate_message("테스트" , 0 , new_text) + "\n")
+	message_log.append_text( _decorate_message("테스트" , 0 , new_text))
 	line_edit.grab_focus()
 	_scroll_to_bottom()
 	
 func _decorate_message(user_name : String, user_id : int, message : String) -> String :
-	var deco_text = "[color=red][" + user_name + "][/color]:" + message
+	var deco_text = "[color=red][" + user_name + "][/color]:" + message + "\n"
 	return deco_text
 
 
+func _load_message_logs( start_id : int) -> void :
+	var response = await NetworkManager.get_message_log(room_id, start_id)
+	
+	if response[1] == 200 :
+		var message_list = JSON.parse_string(response[3].get_string_from_utf8())["messages"]
+		print( message_list )
+		
+		for message in message_list :
+			var log_ling = _decorate_message( "test", message["sender_id"] , message["content"])
+			message_log.append_text(log_ling)
+	
+
 func _scroll_to_bottom() -> void :
 	# RichTextLabel 내부에 숨어있는 세로 스크롤바 오브젝트를 찾아옵니다.
-	var scroll_bar = message_list.get_v_scroll_bar()
+	var scroll_bar = message_log.get_v_scroll_bar()
 	# 스크롤바의 값을 최대치로 변경하여 맨 아래로 내립니다.
 	scroll_bar.value = scroll_bar.max_value
+
+
+func _on_exit_button_pressed() -> void:
+	var chatlist_instance = CHATROOM_SCENE.instantiate()
+	get_tree().change_scene_to_node(chatlist_instance)

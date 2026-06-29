@@ -9,7 +9,7 @@ func _ready() -> void:
 	NetworkManager.request_completed.connect(hide_loading)
 	
 	hide_loading()
-	hide_modal()
+	_hide_modal()
 
 func show_loading() -> void :
 	visible = true
@@ -26,7 +26,11 @@ func show_modal(content : String) -> void :
 	modal_ui.visible = true
 	modal_content.text = content
 	
-func hide_modal() -> void :
+	await get_tree().create_timer(1.0).timeout
+	
+	_hide_modal()
+	
+func _hide_modal() -> void :
 	visible = false
 	modal_ui.visible = false
 	

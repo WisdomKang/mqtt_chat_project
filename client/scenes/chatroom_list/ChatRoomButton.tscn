@@ -1,22 +1,7 @@
 [gd_scene format=3 uid="uid://dtyr0aqa7wtcf"]
 
-[sub_resource type="GDScript" id="GDScript_p4f7n"]
-script/source = "extends Button
-
-class_name ChatRoomButton
-
-var room_name : String
-var room_id : int
-
-func init_room_info( new_room_name: String , new_room_id : int) -> void :
-	room_name = new_room_name
-	room_id = new_room_id
-	
-"
-
 [node name="ChatRoomButton" type="Button" unique_id=873290829]
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 32
 text = "ChatRoom Title"
-script = SubResource("GDScript_p4f7n")

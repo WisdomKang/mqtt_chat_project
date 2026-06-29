@@ -10,8 +10,8 @@ type MessageRepository struct {
 	DB *gorm.DB
 }
 
-func (r MessageRepository) CreateMessage(message models.Message) error {
-	return r.DB.Create(&message).Error
+func (r MessageRepository) CreateMessage(message *models.Message) error {
+	return r.DB.Create(message).Error
 }
 
 func (r MessageRepository) FindByRoomId(roomId int, start_id int, pageSize int) ([]models.Message, error) {

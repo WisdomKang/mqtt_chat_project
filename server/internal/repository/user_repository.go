@@ -11,8 +11,8 @@ type UserRepository struct {
 	DB *gorm.DB
 }
 
-func (r UserRepository) CreateUser(user models.User) error {
-	return r.DB.Create(&user).Error
+func (r UserRepository) CreateUser(user *models.User) error {
+	return r.DB.Create(user).Error
 }
 
 func (r UserRepository) FindByUserName(username string) (*models.User, error) {

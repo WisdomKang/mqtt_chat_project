@@ -40,13 +40,15 @@ services:
       - "8080:8080"
     depends_on :
       - postgres
+    # volumes:
+    #   - ./server:/app
     networks:
       - mqtt_chat_network
 
   mqtt-webhook-bridge :
     build : ./mqtt_web_hook
     environment:
-      - MQTT_BROKER_URL=tcp://mosquitto:1883        # 컴포즈  내부 주소
+      - MQTT_BROKER_URL=tcp://mqtt-broker:1883        # 컴포즈  내부 주소
       - WEBHOOK_TARGET_URL=http://http-handler-server:8080/api/v1/messages # 컴포즈 내부 주소
     container_name : mqtt-webhook-bridge
     restart : always
