@@ -11,22 +11,22 @@ func _on_enter_button_pressed() -> void:
 	var user_name: String = name_input.text.strip_edges()
 	
 	if user_name.is_empty():
-		print("이름을 입력해 주세요!")
+		GlobalUI.show_modal("이름을 입력해주세요.")
 		return
 		
-	print("입장 시도 유저 이름: ", user_name)
+	GlobalUI.show_loading()
 	
-	NetworkManager.signin(user_name)
+	var result = await NetworkManager.signin(user_name)
 	
-func _on_signin_request_completed(response : Array ) :
-	print( response )
-	if response[1] == 200:
-		var json = JSON.parse_string(response[3].get_string_from_utf8())
-		NetworkManager.set_user(json["user"])
+	print( result )
+	if result["result"] :
+		NetworkManager.set_user( result["body"]["user"] )
+		GlobalUI.hide_loading()
 		SceneManager.load_chatroom_list()
-	else:
-		print("서버 에러 발생! 상태 코드: ", response[1])
+	else :
 		GlobalUI.show_modal("로그인에 실패했습니다.")
+	
+	
 	
 	
 	

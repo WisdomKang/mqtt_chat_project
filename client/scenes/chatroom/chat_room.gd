@@ -53,5 +53,4 @@ func _scroll_to_bottom() -> void :
 
 
 func _on_exit_button_pressed() -> void:
-	var chatlist_instance = CHATROOM_SCENE.instantiate()
-	get_tree().change_scene_to_node(chatlist_instance)
+	SceneManager.load_chatroom_list()

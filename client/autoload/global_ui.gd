@@ -5,9 +5,6 @@ extends CanvasLayer
 @onready var modal_content = $CenterContainer/ModalUIContainer/ModalContent
 
 func _ready() -> void:
-	NetworkManager.request_start.connect(show_loading)
-	NetworkManager.request_completed.connect(hide_loading)
-	
 	hide_loading()
 	_hide_modal()
 
