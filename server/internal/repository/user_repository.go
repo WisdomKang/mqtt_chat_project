@@ -23,5 +23,5 @@ func (r UserRepository) FindByUserName(username string) (*models.User, error) {
 }
 
 func (r UserRepository) DeleteUser(userId int) error {
-	return r.DB.Where("user_id=?", userId).Update("deleted_at", time.Now()).Error
+	return r.DB.Where("id=?", userId).Update("deleted_at", time.Now()).Error
 }

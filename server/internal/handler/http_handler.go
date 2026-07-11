@@ -43,7 +43,7 @@ func (h HttpHandler) SignIn(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(200, gin.H{"user": user})
+	ctx.JSON(200, user)
 
 }
 
@@ -72,7 +72,7 @@ func (h HttpHandler) SignUp(ctx *gin.Context) {
 			"details": err.Error()})
 		return
 	}
-	ctx.JSON(200, gin.H{"user": newUser})
+	ctx.JSON(200, newUser)
 
 }
 
@@ -106,7 +106,7 @@ func (h HttpHandler) GetMessages(ctx *gin.Context) {
 		ctx.JSON(500, gin.H{"error": "메시지 로드 실패"})
 		return
 	}
-	ctx.JSON(200, gin.H{"messages": messages})
+	ctx.JSON(200, messages)
 }
 
 // 메시지 기록
@@ -119,19 +119,19 @@ func (h HttpHandler) RecordMessage(ctx *gin.Context) {
 		return
 	}
 
-	newMessage := models.Message{
-		MessageId: message.MessageId,
-		RoomId:    message.RoomId,
-		SenderId:  message.SenderId,
-		Content:   message.Content,
+	recordMessage := models.Message{
+		Id:       message.Id,
+		RoomId:   message.RoomId,
+		SenderId: message.SenderId,
+		Content:  message.Content,
 	}
 
-	err = h.MessageRepo.CreateMessage(&newMessage)
+	err = h.MessageRepo.CreateMessage(&recordMessage)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": "메시지 저장 실패", "details": err.Error()})
 		return
 	}
-	ctx.JSON(200, gin.H{"message": newMessage})
+	ctx.JSON(200, recordMessage)
 }
 
 // 대화방 생성
@@ -150,7 +150,7 @@ func (h HttpHandler) CreateRoom(ctx *gin.Context) {
 		ctx.JSON(500, gin.H{"error": "방 생성 실패"})
 	}
 
-	ctx.JSON(200, gin.H{"room": room})
+	ctx.JSON(200, room)
 }
 
 // 대화방 조회

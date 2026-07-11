@@ -32,6 +32,6 @@ func (r RoomRepository) GetRooms() ([]models.Room, error) {
 
 func (r RoomRepository) FindByRoomId(roomId int, page int) (*models.Room, error) {
 	var room models.Room
-	err := r.DB.Where("room_id=?", roomId).First(&room).Error
+	err := r.DB.Where("id=?", roomId).First(&room).Error
 	return &room, err
 }
