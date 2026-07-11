@@ -23,10 +23,10 @@ var node *snowflake.Node
 var mqttClient mqtt.Client
 
 type ChatMessage struct {
-	MessageId int64  `json:"message_id"`
-	RoomId    int    `json:"room_id"`
-	SenderId  int    `json:"sender_id"`
-	Content   string `json:"content"`
+	Id       int64  `json:"id"`
+	RoomId   int    `json:"room_id"`
+	SenderId int    `json:"sender_id"`
+	Content  string `json:"content"`
 }
 
 func init() {
@@ -94,10 +94,10 @@ func onReceiveMessage(c mqtt.Client, msg mqtt.Message) {
 		log.Printf("messsage error : %v", errT)
 		return
 	}
-	log.Printf("Receive topic : %v , msg : %v", msg.Topic(), chatMessage)
+	log.Printf("Receive topic : %v , msg : %v", msg.Topic(), string(msg.Payload()))
 
 	messageId := node.Generate().Int64()
-	chatMessage.MessageId = messageId
+	chatMessage.Id = messageId
 
 	messageByte, err := json.Marshal(chatMessage)
 	if err != nil {
