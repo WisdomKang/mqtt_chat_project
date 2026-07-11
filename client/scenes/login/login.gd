@@ -20,7 +20,8 @@ func _on_enter_button_pressed() -> void:
 	
 	print( result )
 	if result["result"] :
-		NetworkManager.set_user( result["body"]["user"] )
+		NetworkManager.set_user( result["body"] )
+		NetworkManager.connect_mqtt_broker()
 		GlobalUI.hide_loading()
 		SceneManager.load_chatroom_list()
 	else :

@@ -12,16 +12,16 @@ func _ready() -> void:
 
 func _load_chatroom_list() :
 	var response = await NetworkManager.get_chatroom_list()
-	if response[1] == 200 :
+	if response["result"] :
 		for child in list_box.get_children() :
 			child.queue_free()
 		
-		chatroom_list = JSON.parse_string(response[3].get_string_from_utf8())
+		chatroom_list = response["body"]
 		
 		for chatroom in chatroom_list :
 			var button = CHATROOM_BUTTON.instantiate()
 			button.text = chatroom["room_name"]
-			button.pressed.connect(_on_room_button_pressed.bind(chatroom["room_name"] , chatroom["room_id"]))
+			button.pressed.connect(_on_room_button_pressed.bind(chatroom["room_name"] , chatroom["id"]))
 			list_box.add_child(button)
 			
 

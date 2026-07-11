@@ -334,7 +334,7 @@ func disconnect_from_server():
 	
 
 func publish(stopic, smsg, retain=false, qos=0):
-	var msg = smsg.to_ascii_buffer() if not binarymessages else smsg
+	var msg = smsg.to_utf8_buffer() if not binarymessages else smsg
 	var topic = stopic.to_ascii_buffer()
 	
 	var pkt = PackedByteArray()
@@ -423,7 +423,8 @@ func wait_msg():
 			pid1 = (receivedbuffer[im]<<8) + receivedbuffer[im+1]
 			im += 2
 		var data = receivedbuffer.slice(im, i + sz)
-		var msg = data if binarymessages else data.get_string_from_ascii()
+		#var msg = data if binarymessages else data.get_string_from_ascii()
+		var msg = data if binarymessages else data.get_string_from_utf8()
 		
 		if verbose_level >= 2:
 			print("received topic=", topic, " msg=", msg)

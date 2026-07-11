@@ -13,6 +13,8 @@ var room_id : int
 func _ready() -> void:
 	title_text.text = room_name
 	_load_message_logs(-1)
+	NetworkManager.connect_receive_topic(room_id)
+	NetworkManager.mqtt_client.received_message.connect(_on_receive_message)
 
 func init_chatroom( new_room_name : String , new_room_id : int) -> void :
 	room_name = new_room_name
@@ -24,7 +26,8 @@ func _on_line_edit_text_submitted(new_text: String) -> void:
 		return
 		
 	line_edit.text = ""
-	message_log.append_text( _decorate_message("테스트" , 0 , new_text))
+	
+	NetworkManager.send_message(room_id , new_text)
 	line_edit.grab_focus()
 	_scroll_to_bottom()
 	
@@ -36,14 +39,22 @@ func _decorate_message(user_name : String, user_id : int, message : String) -> S
 func _load_message_logs( start_id : int) -> void :
 	var response = await NetworkManager.get_message_log(room_id, start_id)
 	
-	if response[1] == 200 :
-		var message_list = JSON.parse_string(response[3].get_string_from_utf8())["messages"]
+	if response["result"] :
+		var message_list = response["body"]
 		print( message_list )
 		
 		for message in message_list :
 			var log_ling = _decorate_message( "test", message["sender_id"] , message["content"])
 			message_log.append_text(log_ling)
+		
+		_scroll_to_bottom()
+
+func _on_receive_message( topic : String, message : String) -> void :
+	var message_data = JSON.parse_string(message)
+	print( "receive message :" , message_data)
 	
+	var message_deco = _decorate_message("테스트" , message_data["sender_id"] , message_data["content"])
+	message_log.append_text(message_deco)
 
 func _scroll_to_bottom() -> void :
 	# RichTextLabel 내부에 숨어있는 세로 스크롤바 오브젝트를 찾아옵니다.

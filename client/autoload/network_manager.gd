@@ -2,14 +2,14 @@ extends Node
 
 var server_url = "127.0.0.1"
 var http_server_port = "8080"
-var mqtt_broker_port = "1883"
+var mqtt_broker_port = "8089"
 var http_server_url : String = "http://" + server_url + ":" + http_server_port 
 var mqtt_broker_url : String = "tcp://" + server_url + ":" + mqtt_broker_port
 
 const SIGNUP_PATH = "/auth/signup"
 const SIGNIN_PATH = "/auth/signin"
 
-const GET_ROOMS_PATH = "/api/v1/rooms"
+const ROOMS_PATH = "/api/v1/rooms"
 
 @onready var httpRequest : HTTPRequest = $HTTPRequest
 @onready var mqtt_client : MQTTClient = $MQTT
@@ -28,16 +28,9 @@ func set_server_url( new_ip : String) -> void :
 	server_url = new_ip
 	
 func _get_api_path( path  : String) -> String :
-	return "http://" + server_url + ":" + http_server_port + path
-
-func signin(username : String) -> Dictionary :
-	var signin_url= _get_api_path("/auth/signin")
-	var request_body = { "username" : username }
+	return http_server_url + path
 	
-	httpRequest.request(signin_url, headers, HTTPClient.METHOD_POST, JSON.stringify(request_body))
-		
-	var response = await httpRequest.request_completed
-	
+func parse_result(response : Array) -> Dictionary :
 	var response_code = response[1]
 	var res_headers = response[2]
 	var body = JSON.parse_string(response[3].get_string_from_utf8())  
@@ -54,57 +47,84 @@ func signin(username : String) -> Dictionary :
 			"body" : body
 		}
 		print(response)
-		
+	
 	return result_dict
+		
+
+func signin(username : String) -> Dictionary :
+	var signin_url= _get_api_path(SIGNIN_PATH)
+	var request_body = { "username" : username }
+	
+	httpRequest.request(signin_url, headers, HTTPClient.METHOD_POST, JSON.stringify(request_body))
+		
+	var response = await httpRequest.request_completed
+
+	return parse_result(response)
 	
 	
 	
 func signout() -> void :
 	current_user = null
-	
+
+# MQTT Method
 func connect_mqtt_broker() -> void :
 	mqtt_client.connect_to_broker(mqtt_broker_url)
-	
-	
-	
 
-func get_chatroom_list() -> Array : 
-	var request_url = "http://127.0.0.1:8080" + GET_ROOMS_PATH
+func connect_receive_topic(room_id : int ) -> void :
+	var sub_chat_topic = "chat/" + str(room_id) + "/receive" 
+	print(sub_chat_topic)
+	mqtt_client.subscribe(sub_chat_topic, 1)
+
+func disconnect_receive_topic(room_id : int ) -> void :
+	var sub_chat_topic = "chat/" + str(room_id) + "/receive" 
+	mqtt_client.unsubscribe(sub_chat_topic)
 	
+func send_message(room_id : int , content : String ) -> void :
+	var send_chat_topic = "chat/" + str(room_id) + "/send"
+	var message_data = {
+		"sender_id" : current_user["id"],
+		"room_id" : room_id,
+		"content" : content
+	}
+	
+	var test = JSON.stringify(message_data)
+	print(test)
+	mqtt_client.publish( send_chat_topic , test )
+	 
+
+func get_chatroom_list() -> Dictionary : 
+	var request_url = _get_api_path(ROOMS_PATH)
 	
 	httpRequest.request(request_url , headers, HTTPClient.METHOD_GET)
-	var response_body = await httpRequest.request_completed
+	var response = await httpRequest.request_completed
 	
-	return response_body
+	return parse_result(response)
 	
-func create_chatroom(chatroom_name : String) -> Array :
-	var request_url = "http://127.0.0.1:8080/api/v1/rooms"
+func create_chatroom(chatroom_name : String) -> Dictionary :
+	var request_url = _get_api_path(ROOMS_PATH)
 	var request_body = { "room_name" : chatroom_name } 
 	
 	httpRequest.request(request_url , headers, HTTPClient.METHOD_POST, JSON.stringify(request_body))
-	var response_body = await httpRequest.request_completed
+	var response = await httpRequest.request_completed
 	
-	return response_body
+	return parse_result(response)
 
-func get_message_log(room_id : int, start_id : int) -> Array :
+func get_message_log(room_id : int, start_id : int) -> Dictionary :
 	var request_url = http_server_url + "/api/v1/rooms/" + str(room_id) +"/messages"
 	
 	request_url += "?" + "start_id=" + str(start_id)
 	
-	print(request_url)
 	httpRequest.request(request_url, headers, HTTPClient.METHOD_GET, "")
-	var response_body = await httpRequest.request_completed
-	return response_body
+	var response = await httpRequest.request_completed
+	return parse_result(response)
 
 func set_user( new_user : Dictionary) -> void :
 	current_user = {
 		"username" : new_user["username"],
-		"user_id" : int(new_user["user_id"])
+		"id" : int(new_user["id"])
 	}
 
 func reset_user() -> void :
-	current_user = {
-		"username" : null ,
-		"user_id" : null,
-	}
+	current_user["username"] =  null
+	current_user["id"] = null
 	
