@@ -16,7 +16,7 @@ func (r MessageRepository) CreateMessage(message *models.Message) error {
 
 func (r MessageRepository) FindByRoomId(roomId int, start_id int, pageSize int) ([]models.Message, error) {
 	var messages []models.Message
-	err := r.DB.Where("room_id=? AND id < ?", roomId, start_id).Order("id asc").Limit(pageSize).Find(&messages).Error
+	err := r.DB.Preload("Sender").Where("room_id=? AND id < ?", roomId, start_id).Order("id asc").Limit(pageSize).Find(&messages).Error
 	return messages, err
 }
 

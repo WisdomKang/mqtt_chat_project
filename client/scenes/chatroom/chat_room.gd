@@ -21,7 +21,6 @@ func init_chatroom( new_room_name : String , new_room_id : int) -> void :
 	room_id = new_room_id
 	
 func _on_line_edit_text_submitted(new_text: String) -> void:
-	print("입력 텍스트 : " , new_text)
 	if new_text == "" :
 		return
 		
@@ -32,7 +31,11 @@ func _on_line_edit_text_submitted(new_text: String) -> void:
 	_scroll_to_bottom()
 	
 func _decorate_message(user_name : String, user_id : int, message : String) -> String :
-	var deco_text = "[color=red][" + user_name + "][/color]:" + message + "\n"
+	var color = "[color=green]["
+	if user_id == NetworkManager.current_user["id"] :
+		color = "[color=yellow]["
+		
+	var deco_text = color + user_name + "][/color]:" + message + "\n"
 	return deco_text
 
 
@@ -41,19 +44,17 @@ func _load_message_logs( start_id : int) -> void :
 	
 	if response["result"] :
 		var message_list = response["body"]
-		print( message_list )
 		
 		for message in message_list :
-			var log_ling = _decorate_message( "test", message["sender_id"] , message["content"])
+			var log_ling = _decorate_message( message["sender"]["username"], message["sender_id"] , message["content"])
 			message_log.append_text(log_ling)
 		
 		_scroll_to_bottom()
 
 func _on_receive_message( topic : String, message : String) -> void :
 	var message_data = JSON.parse_string(message)
-	print( "receive message :" , message_data)
 	
-	var message_deco = _decorate_message("테스트" , message_data["sender_id"] , message_data["content"])
+	var message_deco = _decorate_message(message_data["sender"]["username"] , message_data["sender_id"] , message_data["content"])
 	message_log.append_text(message_deco)
 
 func _scroll_to_bottom() -> void :

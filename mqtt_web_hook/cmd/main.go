@@ -23,10 +23,14 @@ var node *snowflake.Node
 var mqttClient mqtt.Client
 
 type ChatMessage struct {
-	Id       int64  `json:"id"`
-	RoomId   int    `json:"room_id"`
-	SenderId int    `json:"sender_id"`
-	Content  string `json:"content"`
+	Id       int64 `json:"id"`
+	RoomId   int   `json:"room_id"`
+	SenderId int   `json:"sender_id"`
+	Sender   struct {
+		Id       int    `json:"id"`
+		Username string `json:"username"`
+	} `json:"sender"`
+	Content string `json:"content"`
 }
 
 func init() {

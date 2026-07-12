@@ -20,10 +20,13 @@ type Room struct {
 }
 
 type Message struct {
-	Id       int64  `gorm:"primaryKey;column:id" json:"id"`
-	RoomId   int    `gorm:"column:room_id" json:"room_id"`
-	SenderId int    `gorm:"column:sender_id" json:"sender_id"`
-	Content  string `gorm:"column:content" json:"content"`
+	Id     int64 `gorm:"primaryKey;column:id" json:"id"`
+	RoomId int   `gorm:"column:room_id" json:"room_id"`
+
+	SenderId int   `gorm:"column:sender_id" json:"sender_id"`
+	Sender   *User `gorm:"foreignKey:SenderId" json:"sender"`
+
+	Content string `gorm:"column:content" json:"content"`
 
 	created_at time.Time
 }

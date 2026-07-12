@@ -84,6 +84,7 @@ func send_message(room_id : int , content : String ) -> void :
 	var message_data = {
 		"sender_id" : current_user["id"],
 		"room_id" : room_id,
+		"sender" : current_user,
 		"content" : content
 	}
 	
