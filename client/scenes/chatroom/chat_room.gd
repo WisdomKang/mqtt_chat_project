@@ -94,4 +94,5 @@ func _scroll_to_bottom() -> void :
 
 
 func _on_exit_button_pressed() -> void:
+	NetworkManager.disconnect_receive_topic(room_id)
 	SceneManager.load_chatroom_list()

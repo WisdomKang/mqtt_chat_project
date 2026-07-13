@@ -24,10 +24,10 @@ var mqtt_user = {
 	"password" : null,
 }
 
-func set_server_url( new_ip : String) -> void : 
+func set_server_url(new_ip : String) -> void : 
 	server_url = new_ip
 	
-func _get_api_path( path  : String) -> String :
+func _get_api_path(path:String) -> String :
 	return http_server_url + path
 	
 func parse_result(response : Array) -> Dictionary :
@@ -68,6 +68,12 @@ func signout() -> void :
 
 # MQTT Method
 func connect_mqtt_broker() -> void :
+	mqtt_client.connect_to_broker(mqtt_broker_url)
+	mqtt_client.broker_disconnected.connect(reconnect_broker)
+
+func reconnect_broker() -> void :
+	print("broker disconnect. try to reconnect...")
+	await get_tree().create_timer(0.5).timeout
 	mqtt_client.connect_to_broker(mqtt_broker_url)
 
 func connect_receive_topic(room_id : int ) -> void :
