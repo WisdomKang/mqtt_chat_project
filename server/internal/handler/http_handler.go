@@ -102,6 +102,10 @@ func (h HttpHandler) GetMessages(ctx *gin.Context) {
 
 	messages, err := h.MessageRepo.FindByRoomId(roomIdInt, startIdInt, 30)
 
+	for i, j := 0, len(messages)-1; i < j; i, j = i+1, j-1 {
+		messages[i], messages[j] = messages[j], messages[i]
+	}
+
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": "메시지 로드 실패"})
 		return
